@@ -7,9 +7,11 @@
 ####
 
 team_name = 'E0'
-strategy_name = 'Collude'
-strategy_description = 'Always collude.'
-    
+strategy_name = 'Betray 95% unless betrayed within last 2 rounds.'
+strategy_description = 'Betray if ever betrayed. If I haven\'t been betrayed yet, I\'ll betray starting with the 100th round.'
+
+import random 
+
 def move(my_history, their_history, my_score, their_score):
     '''Make my move based on the history with this player.
     
@@ -22,5 +24,11 @@ def move(my_history, their_history, my_score, their_score):
     '''
     
     # This player always colludes.
-    return 'c'
+    if 'b' in their_history[-2:]: # If the other player has betrayed within last 2 rounds, 
+        return 'b'               # Betray.
+    else:
+        if random.random()<0.95: # 95% of the other rounds
+            return 'b'         # Betray
+        else:
+            return 'c'         # but 5% of the time collude
     

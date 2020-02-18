@@ -1,8 +1,9 @@
 --------------------------------------------------------------------------------
 Section 0 - Line up
 --------------------------------------------------------------------------------
-Player 0 (P0): E0, Collude
-        Always collude.
+Player 0 (P0): E0, Collude 90% unless betrayed within last 2 rounds.
+        Betray if ever betrayed. If I haven't been betrayed yet, I'll betray sta
+        rting with the 100th round.
 Player 1 (P1): E1, Betray
         Always betray.
 Player 2 (P2): E2, Alternate
@@ -14,20 +15,20 @@ Section 1 - Player vs. Player
 --------------------------------------------------------------------------------
 Each column shows pts//round earned against each other player:
              P0     P1     P2     P3
-vs. P0 :      0    100     49     32
-vs. P1 :   -500      0   -375   -418
-vs. P2 :   -248    -75      0   -193
-vs. P3 :   -164    -17    -90      0
-TOTAL  :   -912      8   -416   -579
+vs. P0 :      0   -250   -375   -414
+vs. P1 :   -250      0   -375   -418
+vs. P2 :    -75    -75      0   -192
+vs. P3 :    -19    -16    -90      0
+TOTAL  :   -344   -341   -840  -1024
 --------------------------------------------------------------------------------
 Section 2 - Leaderboard
 --------------------------------------------------------------------------------
 Average points per round:
 Team name (P#):  Score      with strategy name
-E1        (P1):          2 points with Betray                                  
-E2        (P2):       -104 points with Alternate                               
-E3        (P3):       -145 points with Collude but retaliate                   
-E0        (P0):       -228 points with Collude                                 
+E0        (P0):        -86 points with Collude 90% unless betrayed within last 
+E1        (P1):        -86 points with Betray                                  
+E2        (P2):       -210 points with Alternate                               
+E3        (P3):       -256 points with Collude but retaliate                   
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 example0--------------------------------------------------------------------------------
@@ -40,9 +41,11 @@ example0------------------------------------------------------------------------
 ####
 
 team_name = 'E0'
-strategy_name = 'Collude'
-strategy_description = 'Always collude.'
-    
+strategy_name = 'Collude 90% unless betrayed within last 2 rounds.'
+strategy_description = 'Betray if ever betrayed. If I haven\'t been betrayed yet, I\'ll betray starting with the 100th round.'
+
+import random 
+
 def move(my_history, their_history, my_score, their_score):
     '''Make my move based on the history with this player.
     
@@ -55,7 +58,13 @@ def move(my_history, their_history, my_score, their_score):
     '''
     
     # This player always colludes.
-    return 'c'
+    if 'b' in their_history[-2:]: # If the other player has betrayed within last 2 rounds, 
+        return 'b'               # Betray.
+    else:
+        if random.random()<0.95: # 95% of the other rounds
+            return 'b'         # Betray
+        else:
+            return 'c'         # but 90% of the time collude
     --------------------------------------------------------------------------------
 example1--------------------------------------------------------------------------------
 ####
@@ -145,43 +154,52 @@ def move(my_history, their_history, my_score, their_score):
         return 'c' # otherwise collude.--------------------------------------------------------------------------------
 Section 3 - Game Data for Team E0
 --------------------------------------------------------------------------------
--500 pt//round: E0(P0) "Collude"
-100 pt//ound: E1(P1) "Betray"
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+-250 pt//round: E0(P0) "Collude 90% unless betrayed within last 2 rounds."
+-250 pt//ound: E1(P1) "Betray"
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 
---------------------------------------------------------------------------------
--248 pt//round: E0(P0) "Collude"
-49 pt//ound: E2(P2) "Alternate"
-CcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCc
-CBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCB
-
-CcCcCcCcCcCcCcCcCcCcCcC
-CBCBCBCBCBCBCBCBCBCBCBC
+bbbbbbbbbbbb
+bbbbbbbbbbbb
 
 --------------------------------------------------------------------------------
--164 pt//round: E0(P0) "Collude"
-32 pt//ound: E3(P3) "Collude but retaliate"
-CCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcC
-CCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBC
+-75 pt//round: E0(P0) "Collude 90% unless betrayed within last 2 rounds."
+-375 pt//ound: E2(P2) "Alternate"
+BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
+cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
 
-CcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCC
-CBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCC
+BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
+cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
+
+--------------------------------------------------------------------------------
+-19 pt//round: E0(P0) "Collude 90% unless betrayed within last 2 rounds."
+-414 pt//ound: E3(P3) "Collude but retaliate"
+BBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBcBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbB
+cccbccbccbccbccbccbccbccbccbccbccbccbccbccbccBccbccbccbccbccbccbccbccbccbccbccbc
+
+BbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBcBBbBBbBBbBBb
+cbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccBccbccbccbccb
+
+BBbBBbBBb
+ccbccbccb
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 Section 3 - Game Data for Team E1
 --------------------------------------------------------------------------------
-100 pt//round: E1(P1) "Betray"
--500 pt//ound: E0(P0) "Collude"
-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+-250 pt//round: E1(P1) "Betray"
+-250 pt//ound: E0(P0) "Collude 90% unless betrayed within last 2 rounds."
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 
-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+bbbbbbbbbbbb
+bbbbbbbbbbbb
 
 --------------------------------------------------------------------------------
 -75 pt//round: E1(P1) "Betray"
@@ -189,11 +207,11 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
 cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
 
-BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
-cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
+BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
+cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
 
 --------------------------------------------------------------------------------
--17 pt//round: E1(P1) "Betray"
+-16 pt//round: E1(P1) "Betray"
 -418 pt//ound: E3(P3) "Collude but retaliate"
 BBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbB
 cccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbc
@@ -201,20 +219,17 @@ cccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbc
 BbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBb
 cbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccb
 
-BBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBb
-ccbccbccbccbccbccbccbccbccbccbccb
-
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 Section 3 - Game Data for Team E2
 --------------------------------------------------------------------------------
-49 pt//round: E2(P2) "Alternate"
--248 pt//ound: E0(P0) "Collude"
-CBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCB
-CcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCc
+-375 pt//round: E2(P2) "Alternate"
+-75 pt//ound: E0(P0) "Collude 90% unless betrayed within last 2 rounds."
+cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
+BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
 
-CBCBCBCBCBCBCBCBCBCBCBC
-CcCcCcCcCcCcCcCcCcCcCcC
+cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
+BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
 
 --------------------------------------------------------------------------------
 -375 pt//round: E2(P2) "Alternate"
@@ -222,55 +237,49 @@ CcCcCcCcCcCcCcCcCcCcCcC
 cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
 BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
 
-cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
-BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
+cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
+BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
 
 --------------------------------------------------------------------------------
 -90 pt//round: E2(P2) "Alternate"
--193 pt//ound: E3(P3) "Collude but retaliate"
+-192 pt//ound: E3(P3) "Collude but retaliate"
 CBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcB
 CcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBc
 
-CbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCb
-CbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCb
-
-CBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCB
-CcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCc
+CbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCb
+CbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCb
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 Section 3 - Game Data for Team E3
 --------------------------------------------------------------------------------
-32 pt//round: E3(P3) "Collude but retaliate"
--164 pt//ound: E0(P0) "Collude"
-CCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBC
-CCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcC
+-414 pt//round: E3(P3) "Collude but retaliate"
+-19 pt//ound: E0(P0) "Collude 90% unless betrayed within last 2 rounds."
+cccbccbccbccbccbccbccbccbccbccbccbccbccbccbccBccbccbccbccbccbccbccbccbccbccbccbc
+BBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBcBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbB
 
-CBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCCBCC
-CcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCCcCC
+cbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccBccbccbccbccb
+BbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBcBBbBBbBBbBBb
+
+ccbccbccb
+BBbBBbBBb
 
 --------------------------------------------------------------------------------
 -418 pt//round: E3(P3) "Collude but retaliate"
--17 pt//ound: E1(P1) "Betray"
+-16 pt//ound: E1(P1) "Betray"
 cccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbc
 BBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbB
 
 cbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccbccb
 BbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBb
 
-ccbccbccbccbccbccbccbccbccbccbccb
-BBbBBbBBbBBbBBbBBbBBbBBbBBbBBbBBb
-
 --------------------------------------------------------------------------------
--193 pt//round: E3(P3) "Collude but retaliate"
+-192 pt//round: E3(P3) "Collude but retaliate"
 -90 pt//ound: E2(P2) "Alternate"
 CcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBc
 CBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcB
 
-CbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCb
-CbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCb
-
-CcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCc
-CBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCB
+CbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCbCcBcCb
+CbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCbCBcBCb
 
 --------------------------------------------------------------------------------
