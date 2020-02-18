@@ -7,8 +7,8 @@
 ####
 
 team_name = 'E1'
-strategy_name = 'Betray'
-strategy_description = 'Always betray.'
+strategy_name = 'Based on Score'
+strategy_description = 'If our score is less than the other team\'s score then we would betray but otherwise we would collude.'
     
 def move(my_history, their_history, my_score, their_score):
     '''Make my move based on the history with this player.
@@ -22,4 +22,8 @@ def move(my_history, their_history, my_score, their_score):
     '''
     
     #This example player always betrays.      
-    return 'b'
+    if my_score < their_score:
+      return 'b'
+    else:
+      return 'c'
+

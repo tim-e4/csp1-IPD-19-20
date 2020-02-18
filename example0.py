@@ -7,7 +7,7 @@
 ####
 
 team_name = 'E0'
-strategy_name = 'Betray 95% unless betrayed within last 2 rounds.'
+strategy_name = 'Betray 50% unless betrayed within last 2 rounds.'
 strategy_description = 'Betray if ever betrayed. If I haven\'t been betrayed yet, I\'ll betray starting with the 100th round.'
 
 import random 
@@ -27,8 +27,8 @@ def move(my_history, their_history, my_score, their_score):
     if 'b' in their_history[-2:]: # If the other player has betrayed within last 2 rounds, 
         return 'b'               # Betray.
     else:
-        if random.random()<0.95: # 95% of the other rounds
+        if random.random()<0.5: # 50% of the other rounds
             return 'b'         # Betray
         else:
-            return 'c'         # but 5% of the time collude
+            return 'c'         # but 50% of the time collude
     
